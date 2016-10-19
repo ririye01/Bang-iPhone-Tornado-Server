@@ -9,6 +9,7 @@ from tornado.ioloop import IOLoop
 from tornado.options import define, options
 from tornado.escape import recursive_unicode
 
+# convenience imports
 import datetime
 import decimal
 import json
@@ -59,6 +60,12 @@ class BaseHandler(tornado.web.RequestHandler):
         '''
         return self.application.db
 
+    @property
+    def client(self):
+        '''Instance getter for database connection
+        '''
+        return self.application.client
+
     def get_int_arg(self, value, default=[], strip=True):
         '''Convenience method for grabbing integer arguments
            from HTTP headers. Will raise an HTTP error if
@@ -96,13 +103,12 @@ class BaseHandler(tornado.web.RequestHandler):
             raise HTTPJSONError(1, e)
 
     def write_json(self, value={}):
-		'''Completes header and writes JSONified 
-		   HTTP back to client
-		'''
-		self.set_header("Content-Type", "application/json")
-		tmp = json_str(value);
-		print tmp
-		self.write(tmp)
+        '''Completes header and writes JSONified 
+           HTTP back to client
+        '''
+        self.set_header("Content-Type", "application/json")
+        tmp = json_str(value);
+        self.write(tmp)
 
 
 
