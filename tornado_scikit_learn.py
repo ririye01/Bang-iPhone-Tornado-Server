@@ -2,7 +2,9 @@
 '''Starts and runs the scikit learn server'''
 
 # For this to run properly, MongoDB must be running
-# something like $./mongod --dbpath "../data/db"
+#    Navigate to where mongo db is installed and run
+#    something like $./mongod --dbpath "../data/db"
+#    might need to use sudo (yikes!)
 
 # database imports
 from pymongo import MongoClient
@@ -16,49 +18,45 @@ from tornado.options import define, options
 
 # custom imports
 from basehandler import BaseHandler
-import examplehandlers
-import sklearnhandlers
+import sklearnhandlers as skh
 
 # Setup information for tornado class
-define("port", default=8000,
-       help="run on the given port", type=int)
+define("port", default=8000, help="run on the given port", type=int)
 
 # Utility to be used when creating the Tornado server
 # Contains the handlers and the database connection
 class Application(tornado.web.Application):
     def __init__(self):
-	'''Store necessary handlers,
-	   connect to database
-	'''
+        '''Store necessary handlers,
+           connect to database
+        '''
 
-        handlers = [(r"/[/]?", 
-                        BaseHandler),
-                    (r"/GetExample[/]?",
-                        examplehandlers.TestHandler),
-                    (r"/DoPost[/]?",
-                        examplehandlers.PostHandlerAsGetArguments),
-                    (r"/PostWithJson[/]?",
-                        examplehandlers.JSONPostHandler),
-                    (r"/Upload[/]?",
-                        examplehandlers.FileUploadHandler),
-                    (r"/AddDataPoint[/]?",
-                        sklearnhandlers.UploadLabeledDatapointHandler),
-                    (r"/GetNewDatasetId[/]?",
-                        sklearnhandlers.RequestNewDatasetId),
-                    (r"/UpdateModel[/]?",
-                        sklearnhandlers.UpdateModelForDatasetId),     
-                    (r"/PredictOne[/]?",
-                        sklearnhandlers.PredictOneFromDatasetId),               
+        handlers = [(r"/[/]?", BaseHandler),
+                    (r"/Handlers[/]?",        skh.PrintHandlers),
+                    (r"/AddDataPoint[/]?",    skh.UploadLabeledDatapointHandler),
+                    (r"/GetNewDatasetId[/]?", skh.RequestNewDatasetId),
+                    (r"/UpdateModel[/]?",     skh.UpdateModelForDatasetId),     
+                    (r"/PredictOne[/]?",      skh.PredictOneFromDatasetId),               
                     ]
+
+        self.handlers_string = str(handlers)
+
+        try:
+            self.client  = MongoClient(serverSelectionTimeoutMS=50) # local host, default port
+            print(self.client.server_info()) # force pymongo to look for possible running servers, error if none running
+            # if we get here, at least one instance of pymongo is running
+            self.db = self.client.sklearndatabase # database with labeledinstances, models
+            
+        except ServerSelectionTimeoutError as inst:
+            print('Could not initialize database connection, stopping execution')
+            print('Are you running a valid local-hosted instance of mongodb?')
+            raise inst
+        
+        self.clf = [] # the classifier model (in-class assignment, you might need to change this line!)
+        # but depending on your implementation, you may not need to change it  ¯\_(ツ)_/¯
 
         settings = {'debug':True}
         tornado.web.Application.__init__(self, handlers, **settings)
-
-        self.client  = MongoClient() # local host, default port
-        self.db = self.client.sklearndatabase # database with labeledinstances, models
-        self.clf = []
-
-        #self.client.close() # this opened a socket -- lets close that connection
 
     def __exit__(self):
         self.client.close() # just in case

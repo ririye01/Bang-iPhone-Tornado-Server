@@ -66,6 +66,12 @@ class BaseHandler(tornado.web.RequestHandler):
         '''
         return self.application.client
 
+    @property
+    def clf(self):
+        '''Instance getter for current classifier
+        '''
+        return self.application.clf
+
     def get_int_arg(self, value, default=[], strip=True):
         '''Convenience method for grabbing integer arguments
            from HTTP headers. Will raise an HTTP error if
