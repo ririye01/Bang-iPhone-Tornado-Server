@@ -93,15 +93,3 @@ class PredictOneFromDatasetId(BaseHandler):
 		predLabel = self.clf.predict(fvals);
 		self.write_json({"prediction":str(predLabel)})
 		#self.client.close()
-
-
-
-
-
-
-
-
-
-
-
-
