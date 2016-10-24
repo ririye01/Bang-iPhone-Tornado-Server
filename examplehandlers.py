@@ -37,7 +37,8 @@ class JSONPostHandler(BaseHandler):
     def post(self):
         '''Respond with arg1 and arg1*4
         '''
-        data = json.loads(self.request.body)
+        #print(self.request.body.decode("utf-8"))
+        data = json.loads(self.request.body.decode("utf-8"))
         self.write_json({"arg1":data['arg'][0]*2,"arg2":data['arg']});
 
 
