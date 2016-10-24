@@ -14,6 +14,7 @@ from sklearn.neighbors import KNeighborsClassifier
 import pickle
 from bson.binary import Binary
 import json
+import numpy as np
 
 class PrintHandlers(BaseHandler):
     def get(self):
@@ -27,7 +28,7 @@ class UploadLabeledDatapointHandler(BaseHandler):
     def post(self):
         '''Save data point and class label to database
         '''
-        data = json.loads(self.request.body)
+        data = json.loads(self.request.body.decode("utf-8"))
 
         vals = data['feature']
         fvals = [float(val) for val in vals]
@@ -67,11 +68,11 @@ class UpdateModelForDatasetId(BaseHandler):
         c1 = KNeighborsClassifier(n_neighbors=3);
         acc = -1;
         if l:
-            c1.fit(f,l); # training
-            lstar = c1.predict(f);
-            self.clf = c1;
-            acc = sum(lstar==l)/float(len(l));
-            bytes = pickle.dumps(c1);
+            c1.fit(f,l) # training
+            lstar = c1.predict(f)
+            self.clf = c1
+            acc = sum(lstar==l)/float(len(l))
+            bytes = pickle.dumps(c1)
             self.db.models.update({"dsid":dsid},
                 {  "$set": {"model":Binary(bytes)}  },
                 upsert=True)
@@ -84,10 +85,11 @@ class PredictOneFromDatasetId(BaseHandler):
     def post(self):
         '''Predict the class of a sent feature vector
         '''
-        data = json.loads(self.request.body)    
+        data = json.loads(self.request.body.decode("utf-8"))    
 
         vals = data['feature'];
         fvals = [float(val) for val in vals];
+        fvals = np.array(fvals).reshape(1, -1)
         dsid  = data['dsid']
 
         # load the model from the database (using pickle)

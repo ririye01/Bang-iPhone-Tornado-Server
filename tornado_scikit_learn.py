@@ -8,6 +8,8 @@
 
 # database imports
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
+
 
 # tornado imports
 import tornado.web
@@ -50,7 +52,7 @@ class Application(tornado.web.Application):
         except ServerSelectionTimeoutError as inst:
             print('Could not initialize database connection, stopping execution')
             print('Are you running a valid local-hosted instance of mongodb?')
-            raise inst
+            #raise inst
         
         self.clf = [] # the classifier model (in-class assignment, you might need to change this line!)
         # but depending on your implementation, you may not need to change it  ¯\_(ツ)_/¯
