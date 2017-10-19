@@ -11,7 +11,18 @@ with open('../flickr.txt') as fid:
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("Hello, MSLC World")
+        self.write("Hello, MSLC World\n")
+        self.write(
+            """<!DOCTYPE html>
+            <html>
+            <body>
+
+            <h1>Hello, MSLC World</h1>
+            <p>Try using /GetExample?arg=</p>
+            <p>Try using /Flickr</p>
+
+            </body>
+            </html>""")
 
 class GetExampleHandler(tornado.web.RequestHandler):
     def get(self):
