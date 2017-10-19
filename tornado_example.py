@@ -32,6 +32,8 @@ class Application(tornado.web.Application):
                     (r"/GetExample[/]?",   eh.TestHandler),
                     (r"/DoPost[/]?",       eh.PostHandlerAsGetArguments),
                     (r"/PostWithJson[/]?", eh.JSONPostHandler),
+                    (r"/LogToDb[/]?",      eh.LogToDatabaseHandler),
+                    (r"/MSLC[/]?",         eh.MSLC),
                     (r"/Upload[/]?",       eh.FileUploadHandler),   # needs nginx running to work           
                     ]
 
