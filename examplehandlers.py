@@ -11,12 +11,28 @@ from basehandler import BaseHandler
 
 import time
 import json
+import pdb
 
 
 class MSLC(BaseHandler):
     def get(self):
+        self.write('''
+            <!DOCTYPE html>
+            <html>
+            <body>
+
+            <h1>Database Queries</h1>
+
+            ''')
+        # now we can display the queries
+        # as HTML
         for f in self.db.queries.find():
-            self.write(str(f))
+            self.write('<p>'+str(f)+'</p>')
+
+        self.write('''
+            </body>
+            </html>
+            ''')
 
 class TestHandler(BaseHandler):
     def get(self):
@@ -35,7 +51,7 @@ class PostHandlerAsGetArguments(BaseHandler):
     def get(self):
         '''respond with arg1*2
         '''
-        arg1 = self.get_float_arg("arg1",default="none");
+        arg1 = self.get_float_arg("arg1",default=3.0);
         # self.write("Get from Post Handler? " + str(arg1*2));
         self.write_json({"arg1":arg1,"arg2":2*arg1})
 
@@ -55,11 +71,14 @@ class LogToDatabaseHandler(BaseHandler):
     def get(self):
         '''log query to database
         '''
+        #pdb.set_trace() # to stop here and inspect
+        
         vals = self.get_argument("arg")
         t = time.time()
+        ip = self.request.remote_ip
         dbid = self.db.queries.insert(
-            {"arg":vals,"time":t}
-            );
+            {"arg":vals,"time":t,"remote_ip":ip}
+            )
         self.write_json({"id":str(dbid)})
 
 # deprecated functionality 
