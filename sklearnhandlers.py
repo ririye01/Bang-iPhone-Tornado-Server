@@ -38,14 +38,21 @@ class UploadLabeledDatapointHandler(BaseHandler):
         dbid = self.db.labeledinstances.insert(
             {"feature":fvals,"label":label,"dsid":sess}
             );
-        self.write_json({"id":str(dbid),"feature":fvals,"label":label})
+        self.write_json({"id":str(dbid),
+            "feature":[str(len(fvals))+" Points Received",
+                    "min of: " +str(min(fvals)),
+                    "max of: " +str(max(fvals))],
+            "label":label})
 
 class RequestNewDatasetId(BaseHandler):
     def get(self):
         '''Get a new dataset ID for building a new dataset
         '''
         a = self.db.labeledinstances.find_one(sort=[("dsid", -1)])
-        newSessionId = float(a['dsid'])+1
+        if a == None:
+            newSessionId = 1
+        else:
+            newSessionId = float(a['dsid'])+1
         self.write_json({"dsid":newSessionId})
 
 class UpdateModelForDatasetId(BaseHandler):
@@ -65,7 +72,7 @@ class UpdateModelForDatasetId(BaseHandler):
             l.append(a['label'])
 
         # fit the model to the data
-        c1 = KNeighborsClassifier(n_neighbors=3);
+        c1 = KNeighborsClassifier(n_neighbors=1);
         acc = -1;
         if l:
             c1.fit(f,l) # training
