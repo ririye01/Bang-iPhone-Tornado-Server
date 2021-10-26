@@ -33,14 +33,12 @@ def get_features_and_labels_as_SFrame(dsid):
     # convert to dictionary for tc
     data = {'target':labels}
     data['sequence'] = np.array(features)
-    # for i in range(0,len(features[0])):
-    #     key = '%d'%(i)
-    #     data[key] = features[:,i]
 
     # send back the SFrame of the data
     return tc.SFrame(data=data)
   
 
+print("Getting data from Mongo db for dsid=", dsid)
 data = get_features_and_labels_as_SFrame(dsid)
 
 print("Found",len(data),"labels and feature vectors")
@@ -49,12 +47,20 @@ print("Unique classes found:",data['target'].unique())
 
 print("Training Model")
 
-model = tc.classifier.create(data,target='target')# training
+model = tc.classifier.create(data, target='target')# training
 
 print("Exporting to CoreML")
 model.export_coreml('../TuriModel.mlmodel')
 
 
 # close the mongo connection
-
 client.close() 
+
+
+
+
+
+
+
+
+

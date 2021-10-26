@@ -28,12 +28,12 @@ class Application(tornado.web.Application):
         connect to database
         '''
 
-        handlers = [(r"/[/]?",             BaseHandler),
-                    (r"/GetExample[/]?",   eh.TestHandler),
+        handlers = [(r"/[/]?",             BaseHandler), # raise 404
+                    (r"/GetExample[/]?",   eh.TestHandler), 
                     (r"/DoPost[/]?",       eh.PostHandlerAsGetArguments),
                     (r"/PostWithJson[/]?", eh.JSONPostHandler),
-                    (r"/LogToDb[/]?",      eh.LogToDatabaseHandler),
-                    (r"/MSLC[/]?",         eh.MSLC),
+                    (r"/LogToDb[/]?",      eh.LogToDatabaseHandler), # save to database, if exists
+                    (r"/MSLC[/]?",         eh.MSLC), # custom class that we can add to
                     (r"/Upload[/]?",       eh.FileUploadHandler),   # needs nginx running to work           
                     ]
 
@@ -46,8 +46,9 @@ class Application(tornado.web.Application):
             handlers.append((r"/SaveToDatabase[/]?",eh.LogToDatabaseHandler)) # add new handler for database
             
         except ServerSelectionTimeoutError as inst:
-            print('Could not initialize database connection, skipping')
+            print('\033[1m'+'Could not initialize database connection, skipping, Error Details:'+'\033[0m')
             print(inst)
+            print('=================================')
 
         settings = {'debug':True}
         tornado.web.Application.__init__(self, handlers, **settings)
