@@ -31,13 +31,16 @@ def get_features_and_labels_as_SFrame(dsid):
     features = np.array(features)
 
     # convert to dictionary for tc
-    data = {'target':labels}
-    data['sequence'] = np.array(features)
+    data = {'target':labels, 'sequence': features}
+    
 
     # send back the SFrame of the data
     return tc.SFrame(data=data)
   
 
+# ================================================
+#      Main Script
+#-------------------------------------------------
 print("Getting data from Mongo db for dsid=", dsid)
 data = get_features_and_labels_as_SFrame(dsid)
 

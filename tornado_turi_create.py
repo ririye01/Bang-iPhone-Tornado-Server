@@ -18,6 +18,9 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import define, options
 
+# other imports
+from pprint import PrettyPrinter
+
 # custom imports
 from basehandler import BaseHandler
 import turihandlers as th
@@ -25,6 +28,8 @@ import examplehandlers as eh
 
 # Setup information for tornado class
 define("port", default=8000, help="run on the given port", type=int)
+
+pp = PrettyPrinter(indent=4)
 
 # Utility to be used when creating the Tornado server
 # Contains the handlers and the database connection
@@ -63,6 +68,10 @@ class Application(tornado.web.Application):
         
         self.clf = [] # the classifier model (in-class assignment, you might need to change this line!)
         # but depending on your implementation, you may not need to change it  ¯\_(ツ)_/¯
+
+        print('=================================')
+        print('==========HANDLER INFO===========')
+        pp.pprint(handlers)
 
         settings = {'debug':True}
         tornado.web.Application.__init__(self, handlers, **settings)

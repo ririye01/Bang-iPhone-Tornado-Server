@@ -33,8 +33,9 @@ class MSLC(BaseHandler):
         # as HTML
         for f in self.db.queries.find():
             f['time'] = datetime.fromtimestamp(f['time']).strftime('%c')
-            if f['arg'] not in ['sleep','death']:
-                self.write('<p style="color:blue">'+str(f)+'</p>')
+            self.write('<p style="color:blue">'+str(f)+'</p>')
+            #if f['arg'] not in ['sleep','death']:
+            #    self.write('<p style="color:blue">'+str(f)+'</p>')
 
         self.write('''
             </body>
