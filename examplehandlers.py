@@ -27,6 +27,8 @@ class MSLC(BaseHandler):
 
             <h1>Database Queries</h1>
 
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png" width=90 crossorigin="anonymous">
+
 
             ''')
         # now we can display the queries
@@ -73,7 +75,7 @@ class JSONPostHandler(BaseHandler):
         print(data)
         self.write_json({"arg1":data['arg'][0]*2,
             "arg2":data['arg'],
-            "arg3":[32,4.5,"Eric Rocks!"]})
+            "arg3":[32,4.5,"Eric Rocks!","some_disagree"]})
 
 
 class LogToDatabaseHandler(BaseHandler):
