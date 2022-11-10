@@ -35,7 +35,7 @@ class UploadLabeledDatapointHandler(BaseHandler):
         label = data['label']
         sess  = data['dsid']
 
-        dbid = self.db.labeledinstances.insert(
+        dbid = self.db.labeledinstances.insert_one(
             {"feature":fvals,"label":label,"dsid":sess}
             );
         self.write_json({"id":str(dbid),
