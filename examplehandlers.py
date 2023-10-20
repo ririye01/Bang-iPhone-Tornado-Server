@@ -87,7 +87,7 @@ class LogToDatabaseHandler(BaseHandler):
         vals = self.get_argument("arg")
         t = time.time()
         ip = self.request.remote_ip
-        dbid = self.db.queries.insert(
+        dbid = self.db.queries.insert_one(
             {"arg":vals,"time":t,"remote_ip":ip}
             )
         self.write_json({"id":str(dbid)})

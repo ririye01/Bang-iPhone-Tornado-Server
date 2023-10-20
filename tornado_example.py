@@ -39,7 +39,7 @@ class Application(tornado.web.Application):
                     (r"/PostWithJson[/]?", eh.JSONPostHandler),
                     (r"/LogToDb[/]?",      eh.LogToDatabaseHandler), # save to database, if exists
                     (r"/MSLC[/]?",         eh.MSLC), # custom class that we can add to
-                    (r"/Upload[/]?",       eh.FileUploadHandler),   # needs nginx running to work           
+                    #(r"/Upload[/]?",       eh.FileUploadHandler),   # needs nginx running to work           
                     ]
 
 

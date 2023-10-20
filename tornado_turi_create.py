@@ -54,6 +54,8 @@ class Application(tornado.web.Application):
         self.handlers_string = str(handlers)
 
         try:
+            print('=================================')
+            print('====ATTEMPTING MONGO CONNECT=====')
             self.client  = MongoClient(serverSelectionTimeoutMS=50) # local host, default port
             print(self.client.server_info()) # force pymongo to look for possible running servers, error if none running
             # if we get here, at least one instance of pymongo is running
