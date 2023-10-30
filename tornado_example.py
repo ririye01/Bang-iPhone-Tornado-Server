@@ -37,9 +37,7 @@ class Application(tornado.web.Application):
                     (r"/GetExample[/]?",   eh.TestHandler), 
                     (r"/DoPost[/]?",       eh.PostHandlerAsGetArguments),
                     (r"/PostWithJson[/]?", eh.JSONPostHandler),
-                    (r"/LogToDb[/]?",      eh.LogToDatabaseHandler), # save to database, if exists
                     (r"/MSLC[/]?",         eh.MSLC), # custom class that we can add to
-                    #(r"/Upload[/]?",       eh.FileUploadHandler),   # needs nginx running to work           
                     ]
 
 
@@ -51,6 +49,7 @@ class Application(tornado.web.Application):
             # if we get here, at least one instance of pymongo is running
             self.db = self.client.exampledatabase # database with labeledinstances, models
             handlers.append((r"/SaveToDatabase[/]?",eh.LogToDatabaseHandler)) # add new handler for database
+            print('=================================')
             
         except ServerSelectionTimeoutError as inst:
             print('=================================')

@@ -48,7 +48,7 @@ class TestHandler(BaseHandler):
     def get(self):
         '''Write out to screen
         '''
-        self.write("Test of Hello World")
+        self.write("Test of Hello World, Add the number 2!!")
 
 class PostHandlerAsGetArguments(BaseHandler):
     def post(self):
@@ -63,17 +63,19 @@ class PostHandlerAsGetArguments(BaseHandler):
         '''
         arg1 = self.get_float_arg("arg1",default=3.0);
         # self.write("Get from Post Handler? " + str(arg1*2));
-        self.write("Hope Coronavirus is over! "+str(arg1)+"\n")
+        self.write("Message from 2023: Hope Turi is deprecated! "+str(arg1)+"\n")
         self.write_json({"arg1":arg1,"arg2":2*arg1})
 
 class JSONPostHandler(BaseHandler):
     def post(self):
         '''Respond with arg1 and arg1*4
         '''
-        #print(self.request.body.decode("utf-8"))
+        # could also test this with curl if you want:
+        # curl -X POST -H "Content-Type: application/json" -d '{"arg":[5,3,1]}' localhost:8000/PostWithJson
         data = json.loads(self.request.body.decode("utf-8"))
         print(data)
-        self.write_json({"arg1":data['arg'][0]*2,
+        self.write_json(
+            {"arg1":data['arg'][0]*2,
             "arg2":data['arg'],
             "arg3":[32,4.5,"Eric Rocks!","some_disagree"]})
 
@@ -93,9 +95,9 @@ class LogToDatabaseHandler(BaseHandler):
         self.write_json({"id":str(dbid)})
 
 # deprecated functionality 
-class FileUploadHandler(BaseHandler):
-    def post(self):
-        print(str(self.request))
-        # nginx should be setup for this to work properly
-        # you will need to forward the fields to get it running
-        # something with _name and _path
+# class FileUploadHandler(BaseHandler):
+#     def post(self):
+#         print(str(self.request))
+#         # nginx should be setup for this to work properly
+#         # you will need to forward the fields to get it running
+#         # something with _name and _path

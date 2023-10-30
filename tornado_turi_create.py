@@ -64,8 +64,8 @@ class Application(tornado.web.Application):
         except ServerSelectionTimeoutError as inst:
             print('Could not initialize database connection, stopping execution')
             print('Are you running a valid local-hosted instance of mongodb?')
-            print('   Navigate to where mongo db is installed and run')
-            print('   something like $./mongod --dbpath "/data/db"')
+            print('   Make sure that mongo db is installed and running')
+            print('   using the "brew services start mongodb-community@6.0" command')
             #raise inst
         
         self.clf = [] # the classifier model (in-class assignment, you might need to change this line!)

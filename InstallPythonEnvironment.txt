@@ -27,6 +27,6 @@ pip3 install seaborn
 pip3 install jupyter 
 pip3 install coremltools
 pip3 install turicreate
-pip3 install pymongo==4.3.2 (testing usage of latest pymongo, TBD)
+pip3 install pymongo
 
 
