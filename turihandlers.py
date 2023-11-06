@@ -70,7 +70,7 @@ class UpdateModelForDatasetId(BaseHandler):
             
             model = tc.classifier.create(data,target='target',verbose=0)# training
             yhat = model.predict(data)
-            self.clf = model
+            self.clf[dsid] = model
             acc = sum(yhat==data['target'])/float(len(data))
             # save model for use later, if desired
             model.save('../models/turi_model_dsid%d'%(dsid))
@@ -104,12 +104,13 @@ class PredictOneFromDatasetId(BaseHandler):
 
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
-        if(self.clf == []):
-            print('Loading Model From file')
-            self.clf = tc.load_model('../models/turi_model_dsid%d'%(dsid))
-  
+        print('Loading Model From file')
+        if dsid in self.clf:
+            self.clf[dsid] = tc.load_model('../models/turi_model_dsid%d'%(dsid))
+        else:
+            self.clf[dsid] = tc.classifier.create(data,target='target',verbose=0)
 
-        predLabel = self.clf.predict(fvals);
+        predLabel = self.clf[dsid].predict(fvals);
         self.write_json({"prediction":str(predLabel)})
 
     def get_features_as_SFrame(self, vals):
