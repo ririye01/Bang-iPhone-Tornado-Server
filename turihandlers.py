@@ -112,7 +112,7 @@ class PredictOneFromDatasetId(BaseHandler):
             return
 
         # Check for model existence
-        if dsid not in self.clf:
+        if not dsid in self.clf:
             # Attempt to load the model if it's not in memory
             model_path = f'../models/turi_model_dsid{dsid}'
             try:
