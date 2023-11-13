@@ -67,8 +67,8 @@ class Application(tornado.web.Application):
             print('   Make sure that mongo db is installed and running')
             print('   using the "brew services start mongodb-community@6.0" command')
             #raise inst
-        
-        self.clf = [] # the classifier model (in-class assignment, you might need to change this line!)
+
+        self.clf = {} # the classifier model (in-class assignment, this is now a dictionary!)
         # but depending on your implementation, you may not need to change it  ¯\_(ツ)_/¯
 
         print('=================================')

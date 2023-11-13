@@ -66,11 +66,11 @@ class UpdateModelForDatasetId(BaseHandler):
         # fit the model to the data
         acc = -1
         best_model = 'unknown'
-        if len(data)>0:
-            
-            model = tc.classifier.create(data,target='target',verbose=0)# training
+
+        if len(data) > 0:
+            model = tc.classifier.create(data,target='target',verbose=0)
             yhat = model.predict(data)
-            self.clf[dsid] = model
+            self.clf = {dsid: model}
             acc = sum(yhat==data['target'])/float(len(data))
             # save model for use later, if desired
             model.save('../models/turi_model_dsid%d'%(dsid))
@@ -94,6 +94,7 @@ class UpdateModelForDatasetId(BaseHandler):
         # send back the SFrame of the data
         return tc.SFrame(data=data)
 
+
 class PredictOneFromDatasetId(BaseHandler):
     def post(self):
         '''Predict the class of a sent feature vector
@@ -102,16 +103,23 @@ class PredictOneFromDatasetId(BaseHandler):
         fvals = self.get_features_as_SFrame(data['feature'])
         dsid  = data['dsid']
 
-        # load the model from the database (using pickle)
-        # we are blocking tornado!! no!!
+        print("\nself.clf")
+        print(self.clf)
+        print("\n\n\n")
+
+        if not dsid in self.clf.values():
+            self.write_json({
+                "prediction":f"Model not calibrated yet for {dsid}"
+            })
+            return
+
+        # Only load the model with empty dictionary case
         print('Loading Model From file')
-        if dsid in self.clf:
-            self.clf[dsid] = tc.load_model('../models/turi_model_dsid%d'%(dsid))
-        else:
-            self.clf[dsid] = tc.classifier.create(data,target='target',verbose=0)
+        self.clf[dsid] = tc.load_model('../models/turi_model_dsid%d'%(dsid))
 
         predLabel = self.clf[dsid].predict(fvals);
         self.write_json({"prediction":str(predLabel)})
+
 
     def get_features_as_SFrame(self, vals):
         # create feature vectors from array input
